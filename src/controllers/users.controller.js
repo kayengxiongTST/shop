@@ -1,5 +1,5 @@
 const User = require('../models/user.model')
-
+const { validationResult } = require("express-validator");
 
 const getUsers = async (req, res) => {
     try {
@@ -32,6 +32,14 @@ const getUser = async (req, res) => {
 
 const createUsers = async (req, res) => {
     try {
+        const errors = validationResult(req);
+        
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                errors: errors.array()[0],
+            });
+        }
+
         const { firstName, lastName, age } = req.body
         const user = new User(firstName, lastName, age)
 
@@ -84,5 +92,5 @@ module.exports = {
     createUsers,
     updateUser,
     deleteUser,
-    getUser
+    getUser,
 }
